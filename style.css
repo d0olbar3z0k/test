@@ -1,229 +1,90 @@
-.right {
-    width:220px;
-    position:absolute;
-    background-color:#444445;
-    right:0px;
-    top:0px;
-    border-left:2px solid #5e5e5e;
-  }
-
-body {
-    background-color:#292929;
-    color:white;
-  }
-  
-fieldset {
-    background-color:#444445;
-    border: 2px solid #5e5e5e;
-    margin-right:225px;
-  box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
-  }
-
-th.management {
-  font-family:arial;
-  font-size:11pt;
-  width:20%;
-  border-right:2px solid #5e5e5e;
-  text-align:center;
-  padding-top:10px;
-  padding-bottom:10px;
-  
+body{
+	background: rgb(15,232,146);
+	background: radial-gradient(circle, rgba(15,232,146,1) 0%, rgba(11,186,131,1) 31%, rgba(8,129,153,1) 100%);
 }
 
-td.management {
-  font-family:arial;
-  font-size:10pt;
-  width:20%;
-  border-right:2px solid #5e5e5e;
-  text-align:center;
-  padding-top:0px;
-  padding-bottom:10px;
-  
-  
+/* 
+      ================= ALL BUTTONS ANIMATIONS =================
+*/
+
+.button, .clicker {
+	/*Disable selection and drag*/
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    
+	/*Revome buttons borders and otlines*/
+	outline: none;
+	border: none;
+	background-color:#FFFFFF;/*white*/
+	
+	/*Transition Animation between hover/active...*/
+	transition: box-shadow 0.3s, background-color 0.3s;
+}
+.button:hover, .clicker:hover{
+	box-shadow: 0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(15, 15, 15, 0.15);/*shadow*/
+}
+.button:active, .clicker:active{
+	/*Shadow, color transition*/
+	transition: box-shadow 0.15s, background-color 0.1s;
+	box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.3), 0 20px 20px 0 rgba(0, 0, 0, 0.15);
+	background-color:#F0F0F0;
 }
 
-td.managementa {
-  font-family:arial;
-  font-size:10pt;
-  width:20%;
-  color:#c9c9c9;
-  border-right:2px solid #5e5e5e;
-  text-align:center;
-  padding-top:10px;
-  padding-bottom:10px;
-  
-  
+/*
+			================= SHOP =================
+*/
+.button{
+	width: 200;height: 50;
+	position: absolute;
+	left: 87%;
+	transform: translate(-50%, -50%);
+}
+.button:disabled{
+	background-color: #B3B3B3;
 }
 
-fieldset.cash {
-  height:60px;
-  padding:0px;
-  position:relative;
-  top:-15px;
-  padding-left:10px;
-  padding-right:10px;
-  background-color:#2d2d2d;
+#b1{top:22%}
+#b2{top:32%}
+#b3{top:42%}
+
+
+/* 
+	  ================= Main Clicker Button =================
+*/
+.clicker {
+	/*Size*/
+	border-radius: 50%;
+	width:200px;
+	height:200px;
+	/* Position */
+	position: absolute;/*                postulat de départ */
+	top: 50%; left: 50%;/*               à 50%/50% du parent référent */
+	transform: translate(-50%, -50%);/*  décalage de 50% de sa propre taille */
+	/* Animation */
+	transition: width 0.3s, height 0.3s;
 }
-  
-/* Buttons */
-
-button {
-    width:85%;
-    height:50px;
-    box-shadow:3px 3px 3px rgba(0,0,0,0.5);
-    cursor: pointer;
-  font-family:arial;
-  font-size:8pt;
-  }
-  
-.population {
-    background-color:#3b73c1;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-  }
-
-.population:hover {
-  background-color:#4e81c7;
+.clicker:hover {
+	width:225px;
+	height:225px;
+}
+.clicker:active {
+	transition: width 0.05s, height 0.05s;
+	width:200px;
+	height:200px;
 }
 
-.population:active {
-  background-color:#3e679f;
-}
-  
-.factoryworker {
-    background-color:#c9721a;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-  }
+/* 
+	    ================= Money text Display =================
+*/
 
-.factoryworker:hover {
-  background-color:#ce8030;
-}
-
-.factoryworker:active {
-  background-color:#a46626;
-}
-  
-.factory {
-    background-color:#8C4F12;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-  }
-
-.factory:hover {
-  background-color:#976029;
-}
-
-.factory:active {
-  background-color:#794d20;
-}
-
-.distribution {
-    background-color:#62370C;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-  }
-
-.distribution:hover {
-  background-color:#714b24;
-}
-
-.distribution:active {
-  background-color:#513619;
-}
-
-  
-.house {
-    background-color:#295087;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-  }
-  
-.apartment {
-    background-color:#1c385e;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-  }
-
-.employee {
-  background-color:#1da348;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-}
-
-.store {
-  background-color:#20762e;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-}
-
-.mall {
-  background-color:#165220;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-}
-
-.tourguide {
-  background-color:#cd35d6;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-}
-
-.hotel {
-  background-color:#9A3A9F;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-}
-
-.monument {
-  background-color:#7b2e7f;
-    color:white;
-    border:1px solid black;
-    margin-top:10px;
-    cursor: pointer;
-}
-
-.loan {
-  height:25px;
-  color:white;
-  background-color:#383838;
-  position:absolute;
-  top:116px;
-  right:255px;
-  border:1px solid black;
-  cursor: pointer;
-}
-
-.clickpointz {
-  background-color:#19a122;
-}
-
-.clickpointz:hover {
-  background-color:#43b24b;
-}
-
-.clickpointz:active {
-  background-color:#43b24b;
+.money-text {
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  margin-left: 20px;
+  color: #FFFFFF;
+  font-size: 50;
 }
