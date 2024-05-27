@@ -1,135 +1,128 @@
-var money = 0; // Total money owned by player, starts at 100.
-var mpc = 1; // Total amount of money per click, starts at 1
-var clickerCost = 50; // Total amount to upgrade money per click
-var mps = 0; // Total amount of money gained per second, starts at 0
-var mpf = Math.round(mps/5); // Money per second divided by 5.
-var factoryWorkerCost = 75; // Total amount to buy factory workers
-var factoryWorkers = 0; // Amount of factory workers
-var factoryWorkProduction = 0; // How much the factory workers make per second
-var factoryCost = 1000; // Total amount to buy factories
-var factoryTotal = 1; // Amount of factories
-var houseCost = 750; // Total amount to buy houses
-var houseTotal = 1; // Amount of houses
-var populationProduction = 1; // Amount of money made by population, unaffected by houses
-var employeeCost = 500;
-var employeeTotal = 0;
-var employeeProduction = 0;
+var money = 0,//global player's money
+	clickGain = 1,//money gain on clicker clicked =
+	autoGain = 1,//auto money gain
+	interval;//auto money interval
 
-/* ---------------------------------
-
-#####################
-   Money per Click
-#####################
-
-Deals with:
-    - "Make Money" button
-    - Population
-    - Houses
-    - Apartments
-
-*/
-
-function clickPoint() {     // Used to add money when "Get Money" button is clicked
-    money = money + mpc;
-    document.querySelector("#moneyamount").innerHTML = money;
+// HTML MAIN ELEMENTS (except  shop buttons)
+var element = {
+	clicker   : document.getElementById("main-clicker"),//button
+	money     : document.getElementById("money"),//txt
 }
 
-function upgradeMPC() {     // Used to increase population and add to the amount of money per click
-    if (money >= clickerCost) {
-        money = money - clickerCost;
-        money = money;
-        mpc = mpc + (1 * houseTotal);
-        populationProduction = populationProduction + 1;
-        clickerCost = clickerCost * 1.25;
-        clickerCost = clickerCost.toFixed(0);
-    }
-    document.querySelector("#clickercost").innerHTML = "Cost: $" + clickerCost;
+//       									============= GLOBAL FUNCTIONS =============
 
-    document.querySelector("#moneyamount").innerHTML = money;
-    document.querySelector("#populationamount").innerHTML = mpc;
+function addMoney() { // onClicker pressed add ClickGain
+  money = money + clickGain;
+}
+function updateMoney(check=true) {//update html money txt
+  text = "$" + money;
+  element.money.innerHTML = text;
+  if(check){checkPrices();}
+}
+function autoMoney(amount) {//auto add money every interval
+  clearInterval(interval);
+  interval = setInterval(function(){ money = money + autoGain; updateMoney(); }, 200 / amount);
 }
 
-function buyHouse() {     // Used to multiply money made from population
-    if (money >= houseCost) {
-        money = money - houseCost;
-        houseTotal = houseTotal + 1;
-        money = money;
-        mpc = populationProduction * houseTotal;
-        houseCost = houseCost * 1.25;
-        houseCost = houseCost.toFixed(0);
-    }
-    document.querySelector("#housecost").innerHTML = "Cost: $" + houseCost;
-
-    document.querySelector("#moneyamount").innerHTML = money;
-    document.querySelector("#populationamount").innerHTML = mpc;
+//called when a shop Element was bought
+function checkPrices() {
+	//Check price for each shop element
+	//unlock purchase button if enough money
+	for(let i=0;i<shop.length;i++){
+		if(money >= shop[i].price){
+			shop[i].element.disabled = false;
+		}
+	}
+}
+//called when a shop Element was bought
+function onBuy(obj) {
+	//update money
+	money -= obj.price;
+	updateMoney(check=false);
+	//lock every purchase buttons in shop
+	for(let i=0;i<shop.length;i++){
+		shop[i].element.disabled = true;
+	}
 }
 
-/* ---------------------------------
+//       								 ============= SHOP BUTTON CLASS =============
 
-#####################
-   Automatic Money
-#####################
-
-Deals with:
-    - Money per Second calculator
-    - Factory workers
-    - Factories
-
-*/
-
-function mpsCalc() {        // Used to add the correct amount of money per second, every second
-    mps = (factoryWorkProduction * factoryTotal);
-    document.querySelector("#mps").innerHTML = mps;
-    money = money + mps;
-    document.querySelector("#moneyamount").innerHTML = money;
-    
-    setTimeout(mpsCalc, 20);
+class ShopElement{
+	// Object for elements in the shop.
+	// New Instance Token:
+	//	 id -> html main element id (in Html)
+	//   newprice_func -> the new price formula function
+	//   onclick_func  -> the onClick function
+	
+	constructor (id,newprice_func,onclick_func) 
+	{ //constructor: called on "new ShopElement()"
+		this.id = id;
+		this.element = document.getElementById(id);
+		this.element.onclick = this.purchase.bind(this);
+		this.text_element = this.element.getElementsByTagName("b")[0];
+		
+		this._updatePrice = newprice_func;
+		this._onClick = onclick_func;
+		
+		this.price = 0;
+		this.purchaseLvl = 1;
+		this.updatePrice();
+	}
+	
+	//Call default functions with this as argument
+	onClick(){this._onClick(this);}
+	updatePrice(){this._updatePrice(this);}
+	
+	//Update Button's txt price
+	updateText(){
+		this.text_element.innerHTML = "<b>" +'$'+this.price+': ' + "</b>";}
+	
+	// Update Every new purchase
+	update(){
+		this.updatePrice(); //calculate new price
+		this.updateText();  //update displayed txt
+	}
+	// called on Element clicked
+	purchase(){
+		this.purchaseLvl += 1;
+		this.onClick();
+		onBuy(this);
+		this.update()
+		checkPrices();
+	}
+	
 }
 
-function buyFactWorker() {  // Used to purchase a factory worker, adding to the money per second
-    if (money >= factoryWorkerCost) {
-        money = money - factoryWorkerCost;
-        mps = mps + 1;
-        factoryWorkerCost = factoryWorkerCost * 1.25;
-        factoryWorkerCost = factoryWorkerCost.toFixed(0);
-        factoryWorkProduction = factoryWorkProduction + 1;
-        document.querySelector("#moneyamount").innerHTML = money;
-        document.querySelector("#mps").innerHTML = (factoryWorkProduction * factoryTotal);
-    }
+//       							 =============== SHOP BUTTONS & FUNCTIONS ===============
 
-    document.querySelector("#factoryWorkerCost").innerHTML = "Cost: $" + factoryWorkerCost;
+//alls buttons functions ( newPriceFormula , onClick )
+function newPrice1(obj){obj.price = clickGain * 25 * obj.purchaseLvl;}
+function newPrice2(obj){obj.price = 200 * obj.purchaseLvl;}
+function newPrice3(obj){obj.price = autoGain * 30 * obj.purchaseLvl + 500;}
+function onClick1(obj){clickGain*=2;}
+function onClick2(obj){autoMoney(this.purchaseLvl);}
+function onClick3(obj){autoGain*=2;}
+
+
+
+//all shop's buttons
+shop = [
+	new ShopElement("b1",newPrice1,onClick1),
+	new ShopElement("b2",newPrice2,onClick2),
+	new ShopElement("b3",newPrice3,onClick3),
+];
+
+//       									 ================= START =================
+
+// FIRST UPDATE (on page loaded)
+updateMoney(); //money txt
+for (let i=0;i<shop.length;i++){
+	shop[i].update() //buttons txt & price
 }
 
-function buyFactory() { // Used to a buy a factory, multiplying production
-    if (money >= factoryCost) {
-        money = money - factoryCost;
-        factoryCost = factoryCost * 1.25;
-        factoryCost = factoryCost.toFixed(0);
-        factoryTotal = factoryTotal + 1;
-        document.querySelector("#moneyamount").innerHTML = money;
-        document.querySelector("#mps").innerHTML = (factoryWorkProduction * factoryTotal);
-    }
-
-    document.querySelector("#factorycost").innerHTML = "Cost: $" + factoryCost;
-}
-
-function buyEmployee() {  // Used to purchase a factory worker, adding to the money per second
-    if (money >= employeeCost) {
-        money = money - employeeCost;
-        mps = mps + 5;
-        employeeCost = employeeCost * 1.25;
-        employeeCost = employeeCost.toFixed(0);
-        employeeProduction = employeeProduction + 10;
-        document.querySelector("#moneyamount").innerHTML = money;
-        document.querySelector("#mps").innerHTML = (factoryWorkProduction * factoryTotal);
-    }
-
-    document.querySelector("#factoryWorkerCost").innerHTML = "Cost: $" + factoryWorkerCost;
-}
-
-// ---------------------------------
-
-
-function openLoans() {
-  money = 100000;
-}
+//set main clicker function onClick
+element.clicker.onclick = function() { 
+	element.clicker.disabled = true;
+	addMoney(); updateMoney(); 
+	element.clicker.disabled = false;
+};
